@@ -82,17 +82,28 @@ Genera de nuevo `Portable/PkgEditor` (single-file, self-contained, `linux-x64`).
 ## Release automático (GitHub)
 
 Al crear y subir un tag `v*` (por ejemplo `v2026.1.0`), el workflow
-[`.github/workflows/release-portable-linux.yml`](.github/workflows/release-portable-linux.yml)
-compila el portable Linux y publica un **GitHub Release** con el zip:
+[`.github/workflows/release.yml`](.github/workflows/release.yml)
+publica un **GitHub Release** con **3 archivos**:
 
-`PkgEditor-Linux-Portable-v….zip`
+| Archivo | Contenido |
+|---------|-----------|
+| `PkgEditor-Windows-v….rar` | Windows x64 — `PkgEditor.exe` portable (RAR, descripción Windows) |
+| `PkgEditor-Linux-v….tar` | Linux x64 — portable |
+| `PkgEditor-Linux-v….tar.gz` | Linux x64 — portable comprimido |
 
 ```bash
 git tag v2026.1.0
 git push origin v2026.1.0
 ```
 
-También se puede lanzar a mano desde la pestaña **Actions → Release Portable Linux → Run workflow**.
+También: **Actions → Release → Run workflow**.
+
+Build local:
+
+```bash
+./scripts/publish-portable.sh   # Linux → Portable/
+./scripts/publish-windows.sh    # Windows → publish-win/ (en máquina con SDK; o vía CI)
+```
 
 ---
 
@@ -101,13 +112,14 @@ También se puede lanzar a mano desde la pestaña **Actions → Release Portable
 ```
 Pkg-Editor-2026/
 ├── LibOrbisPkg/          # Core PKG/PFS/GP4/SFO
-├── PkgEditor/            # Editor Windows (original)
-├── PkgEditorLinux/       # Editor Linux (Avalonia)
-├── Portable/             # Ejecutable portable listo para usar
+├── PkgEditor/            # Editor Windows Forms (referencia)
+├── PkgEditorLinux/       # Editor Avalonia (Linux + Windows portable)
+├── Portable/             # Ejecutable portable Linux
 ├── scripts/
-│   └── publish-portable.sh
+│   ├── publish-portable.sh
+│   └── publish-windows.sh
 └── .github/workflows/
-    └── release-portable-linux.yml
+    └── release.yml
 ```
 
 ---
