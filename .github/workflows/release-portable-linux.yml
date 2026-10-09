@@ -1,0 +1,97 @@
+name: Release Portable Linux
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version label for the release (e.g. v2026.1.0). Leave empty to use the tag or a timestamp."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  portable-linux:
+    name: Build & publish linux-x64 portable
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Resolve version
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.version }}" ]; then
+            V="${{ inputs.version }}"
+          elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            V="${GITHUB_REF_NAME}"
+          else
+            V="v$(date -u +%Y.%m.%d-%H%M)"
+          fi
+          # Ensure leading v
+          case "$V" in v*) ;; *) V="v$V" ;; esac
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "Resolved release version: $V"
+
+      - name: Build portable
+        run: |
+          chmod +x scripts/publish-portable.sh
+          ./scripts/publish-portable.sh
+          test -x Portable/PkgEditor
+
+      - name: Package zip
+        run: |
+          VER="${{ steps.ver.outputs.version }}"
+          STAGE="PkgEditor-Linux-Portable-${VER}"
+          mkdir -p "$STAGE"
+          cp Portable/PkgEditor Portable/Launch.sh Portable/README.md "$STAGE/"
+          [ -f Portable/PkgEditor.desktop ] && cp Portable/PkgEditor.desktop "$STAGE/" || true
+          [ -f LICENSE.txt ] && cp LICENSE.txt "$STAGE/" || true
+          [ -f README.md ] && cp README.md "$STAGE/README-repo.md" || true
+          chmod +x "$STAGE/PkgEditor" "$STAGE/Launch.sh"
+          zip -r "${STAGE}.zip" "$STAGE"
+          ls -lh "${STAGE}.zip"
+          echo "ASSET=${STAGE}.zip" >> "$GITHUB_ENV"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.version }}
+          name: Pkg Editor ${{ steps.ver.outputs.version }} (Linux portable)
+          draft: false
+          generate_release_notes: true
+          files: |
+            PkgEditor-Linux-Portable-${{ steps.ver.outputs.version }}.zip
+          body: |
+            ## Pkg Editor — Linux portable (x64)
+
+            Ejecutable **self-contained**: no requiere instalar .NET.
+
+            ### Contenido del zip
+            - `PkgEditor` — binario principal
+            - `Launch.sh` — atajo de arranque
+            - `README.md` — instrucciones del portable
+
+            ### Uso
+            ```bash
+            unzip PkgEditor-Linux-Portable-*.zip
+            cd PkgEditor-Linux-Portable-*
+            ./PkgEditor
+            ```
+
+            ### Créditos
+            - Línea Pkg-Editor: [KimieStar](https://github.com/KimieStar)
+            - LibOrbisPkg: [maxton](https://github.com/maxton/LibOrbisPkg)
+            - Port Linux: EAspotifi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

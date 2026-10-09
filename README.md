@@ -67,7 +67,7 @@ dotnet build -c Release
 
 ---
 
-## Regenerar el portable
+## Regenerar el portable (local)
 
 Desde la raíz del repositorio:
 
@@ -79,16 +79,35 @@ Genera de nuevo `Portable/PkgEditor` (single-file, self-contained, `linux-x64`).
 
 ---
 
+## Release automático (GitHub)
+
+Al crear y subir un tag `v*` (por ejemplo `v2026.1.0`), el workflow
+[`.github/workflows/release-portable-linux.yml`](.github/workflows/release-portable-linux.yml)
+compila el portable Linux y publica un **GitHub Release** con el zip:
+
+`PkgEditor-Linux-Portable-v….zip`
+
+```bash
+git tag v2026.1.0
+git push origin v2026.1.0
+```
+
+También se puede lanzar a mano desde la pestaña **Actions → Release Portable Linux → Run workflow**.
+
+---
+
 ## Estructura del proyecto
 
 ```
-Pkg-Editor-2023/
+Pkg-Editor-2026/
 ├── LibOrbisPkg/          # Core PKG/PFS/GP4/SFO
 ├── PkgEditor/            # Editor Windows (original)
 ├── PkgEditorLinux/       # Editor Linux (Avalonia)
 ├── Portable/             # Ejecutable portable listo para usar
-└── scripts/
-    └── publish-portable.sh
+├── scripts/
+│   └── publish-portable.sh
+└── .github/workflows/
+    └── release-portable-linux.yml
 ```
 
 ---
