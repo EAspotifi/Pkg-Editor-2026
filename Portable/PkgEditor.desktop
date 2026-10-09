@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Pkg Editor
+Comment=PKG / PFS / GP4 editor (Linux portable)
+Exec=./PkgEditor
+Path=
+Terminal=false
+Categories=Utility;
+StartupNotify=true
