@@ -1,0 +1,86 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="PkgEditorLinux.MainWindow"
+        Title="Pkg Editor"
+        Width="1120" Height="720"
+        MinWidth="820" MinHeight="520"
+        DragDrop.AllowDrop="True">
+  <DockPanel>
+    <!-- Top bar -->
+    <Border DockPanel.Dock="Top" Classes="titlebar" Padding="10,6">
+      <DockPanel>
+        <Menu DockPanel.Dock="Left">
+          <MenuItem Header="_File">
+            <MenuItem Header="_Open…" HotKey="Ctrl+O" Click="MenuOpen_Click" />
+            <MenuItem Header="_Close Tab" HotKey="Ctrl+W" Click="MenuClose_Click" />
+            <Separator />
+            <MenuItem Header="_Save" HotKey="Ctrl+S" Name="MenuSave" IsEnabled="False" Click="MenuSave_Click" />
+            <MenuItem Header="Save _As…" HotKey="Ctrl+Shift+S" Name="MenuSaveAs" IsEnabled="False" Click="MenuSaveAs_Click" />
+            <Separator />
+            <MenuItem Header="E_xit" HotKey="Alt+F4" Click="MenuExit_Click" />
+          </MenuItem>
+          <MenuItem Header="_New">
+            <MenuItem Header="GP4 _Project…" Click="MenuNewGp4_Click" />
+            <MenuItem Header="_SFO File" Click="MenuNewSfo_Click" />
+          </MenuItem>
+          <MenuItem Header="_Tools">
+            <MenuItem Header="_Combine PKG Parts…" Click="MenuCombinePkg_Click" />
+          </MenuItem>
+          <MenuItem Header="_Help">
+            <MenuItem Header="_About" Click="MenuAbout_Click" />
+          </MenuItem>
+        </Menu>
+        <TextBlock DockPanel.Dock="Right"
+                   Text="Pkg Editor"
+                   Classes="brand"
+                   VerticalAlignment="Center"
+                   Margin="0,0,8,0" />
+      </DockPanel>
+    </Border>
+
+    <Panel>
+      <TabControl x:Name="ViewTabs" Classes="docs" Padding="0" IsVisible="False" />
+      <Border x:Name="WelcomePanel" Classes="hero" Margin="28">
+        <Grid RowDefinitions="Auto,Auto,*" RowSpacing="22">
+          <StackPanel Spacing="6">
+            <TextBlock Text="Pkg Editor" Classes="h1" />
+            <TextBlock Text="Abre paquetes PKG, imágenes PFS o proyectos GP4 en un entorno nativo Linux."
+                       Classes="muted" TextWrapping="Wrap" MaxWidth="520" />
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" Spacing="10" Grid.Row="1">
+            <Button Classes="accent" Content="Abrir archivo…" Click="MenuOpen_Click" MinWidth="140" />
+            <Button Classes="ghost" Content="Nuevo proyecto GP4" Click="MenuNewGp4_Click" />
+          </StackPanel>
+
+          <UniformGrid Columns="3" Rows="1" Grid.Row="2" Margin="0,8,0,0">
+            <Button Classes="tile" Margin="0,0,10,0" Click="MenuOpen_Click">
+              <StackPanel Spacing="10">
+                <Border Classes="tileicon"><TextBlock Text="PKG" FontSize="11" FontWeight="Bold" /></Border>
+                <TextBlock Text="Paquetes PKG" Classes="h3" />
+                <TextBlock Text="Cabeceras, PARAM.SFO y sistema de archivos PFS interno."
+                           Classes="muted" TextWrapping="Wrap" FontSize="12.5" />
+              </StackPanel>
+            </Button>
+            <Button Classes="tile" Margin="5,0" Click="MenuOpen_Click">
+              <StackPanel Spacing="10">
+                <Border Classes="tileicon"><TextBlock Text="GP4" FontSize="11" FontWeight="Bold" /></Border>
+                <TextBlock Text="Proyectos GP4" Classes="h3" />
+                <TextBlock Text="Edita metadatos y construye PKG / PFS desde Image0."
+                           Classes="muted" TextWrapping="Wrap" FontSize="12.5" />
+              </StackPanel>
+            </Button>
+            <Button Classes="tile" Margin="10,0,0,0" Click="MenuOpen_Click">
+              <StackPanel Spacing="10">
+                <Border Classes="tileicon"><TextBlock Text="PFS" FontSize="11" FontWeight="Bold" /></Border>
+                <TextBlock Text="Imágenes PFS" Classes="h3" />
+                <TextBlock Text="Explora y extrae archivos de contenedores .pfs / .dat."
+                           Classes="muted" TextWrapping="Wrap" FontSize="12.5" />
+              </StackPanel>
+            </Button>
+          </UniformGrid>
+        </Grid>
+      </Border>
+    </Panel>
+  </DockPanel>
+</Window>

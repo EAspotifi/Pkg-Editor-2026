@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="PkgEditorLinux.Views.FileView">
+  <Grid RowDefinitions="Auto,*,Auto">
+    <!-- Toolbar -->
+    <DockPanel Margin="0,0,0,10">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
+        <Button x:Name="ExtractCompressedButton" Content="Extract compressed (PFSC)" IsEnabled="False" />
+        <Button x:Name="ExtractButton" Classes="accent" Content="⬇  Extract" />
+      </StackPanel>
+      <Border Classes="chip" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <TextBlock x:Name="PathText" Classes="mono" Text="/" />
+      </Border>
+    </DockPanel>
+
+    <Border Grid.Row="1" Classes="card" Padding="0" ClipToBounds="True">
+      <Grid ColumnDefinitions="260,1,*">
+        <TreeView x:Name="DirTree" Margin="6" />
+        <GridSplitter Grid.Column="1" ResizeDirection="Columns" />
+        <DataGrid x:Name="FilesGrid" Grid.Column="2" SelectionMode="Extended">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="" Binding="{Binding Icon}" Width="36" />
+            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
+            <DataGridTextColumn Header="Comp. Size" Binding="{Binding CompSize}" Width="120" />
+            <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="120" />
+          </DataGrid.Columns>
+          <DataGrid.ContextMenu>
+            <ContextMenu>
+              <MenuItem x:Name="CtxExtract" Header="Extract" />
+              <MenuItem x:Name="CtxExtractCompressed" Header="Extract compressed (PFSC)" />
+            </ContextMenu>
+          </DataGrid.ContextMenu>
+        </DataGrid>
+      </Grid>
+    </Border>
+
+    <TextBlock x:Name="StatusText" Grid.Row="2" Classes="muted" Margin="2,8,0,0" FontSize="12" />
+  </Grid>
+</UserControl>

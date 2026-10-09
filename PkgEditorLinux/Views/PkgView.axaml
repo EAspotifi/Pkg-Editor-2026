@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="PkgEditorLinux.Views.PkgView">
+  <Grid RowDefinitions="Auto,*" Margin="14" RowSpacing="12">
+    <Border Classes="card">
+      <Grid RowDefinitions="Auto,Auto" RowSpacing="14">
+        <!-- Top: metadata (left) + cover (right) -->
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+          <Grid RowDefinitions="Auto,Auto,Auto"
+                ColumnDefinitions="110,*,90,*"
+                ColumnSpacing="14"
+                RowSpacing="10">
+            <TextBlock Text="Content ID" Classes="label" VerticalAlignment="Center" />
+            <TextBox x:Name="ContentIdTextBox" Classes="mono" IsReadOnly="True"
+                     Grid.Column="1" VerticalAlignment="Center" />
+            <TextBlock Text="Size" Classes="label" Grid.Column="2" VerticalAlignment="Center" />
+            <TextBlock x:Name="SizeLabel" Classes="muted" Grid.Column="3" VerticalAlignment="Center" />
+
+            <TextBlock Text="Title" Classes="label" Grid.Row="1" VerticalAlignment="Center" />
+            <TextBox x:Name="TitleTextBox" IsReadOnly="True"
+                     Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" />
+            <TextBlock Text="Type" Classes="label" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" />
+            <TextBlock x:Name="TypeLabel" Classes="muted" Grid.Row="1" Grid.Column="3"
+                       VerticalAlignment="Center" TextWrapping="Wrap" />
+
+            <TextBlock Text="Version" Classes="label" Grid.Row="2" VerticalAlignment="Center" />
+            <TextBlock x:Name="VersionLabel" Classes="muted" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" />
+            <TextBlock x:Name="AppVerLabelLabel" Text="App Ver" Classes="label"
+                       Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" />
+            <TextBlock x:Name="AppVerLabel" Classes="muted" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" />
+          </Grid>
+
+          <Border x:Name="CoverFrame" Grid.Column="1" Width="128" Height="128"
+                  CornerRadius="10" ClipToBounds="True"
+                  BorderBrush="{StaticResource Border}" BorderThickness="1"
+                  Background="{StaticResource Surface2}"
+                  VerticalAlignment="Top" IsVisible="False">
+            <Image x:Name="CoverImage" Stretch="UniformToFill" />
+          </Border>
+        </Grid>
+
+        <!-- Export (full width, below metadata + cover) -->
+        <DockPanel Grid.Row="1" LastChildFill="True">
+          <Button x:Name="ExportGp4Btn" Classes="accent" Content="Export to GP4 Project"
+                  MinWidth="180" Margin="0,0,14,0" DockPanel.Dock="Left" />
+          <TextBlock x:Name="ExportStatusText" Classes="muted" DockPanel.Dock="Right"
+                     VerticalAlignment="Center" FontSize="12" MinWidth="72"
+                     Margin="12,0,0,0" Text="" TextAlignment="Right" />
+          <ProgressBar x:Name="ExportProgressBar" Minimum="0" Maximum="100" Height="10"
+                       VerticalAlignment="Center" IsIndeterminate="False" />
+        </DockPanel>
+      </Grid>
+    </Border>
+
+    <TabControl x:Name="MainTabs" Classes="sub" Grid.Row="1">
+      <TabItem Header="Overview">
+        <TreeView x:Name="PkgHeaderTreeView" Classes="mono" Margin="4" />
+      </TabItem>
+      <TabItem Header="Outer PFS">
+        <TreeView x:Name="PfsHeaderTreeView" Classes="mono" Margin="4" />
+      </TabItem>
+      <TabItem x:Name="FilesTab" Header="Files">
+        <Border Classes="card" Margin="4">
+          <StackPanel x:Name="UnlockPanel" Spacing="12" MaxWidth="520" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Encrypted package" Classes="h2" HorizontalAlignment="Center" />
+            <TextBlock Text="Introduce el passcode, EKPFS o claves XTS para explorar el sistema de archivos."
+                       Classes="muted" TextWrapping="Wrap" TextAlignment="Center" />
+            <TextBlock Text="Passcode (32)" Classes="label" />
+            <TextBox x:Name="PasscodeTextBox" Classes="mono" MaxLength="32" Watermark="0000…0000" />
+            <Button x:Name="TryPasscodeBtn" Classes="accent" Content="Probar passcode" HorizontalAlignment="Stretch" />
+            <TextBlock Text="EKPFS (hex)" Classes="label" Margin="0,8,0,0" />
+            <TextBox x:Name="EkpfsTextBox" Classes="mono" />
+            <Button x:Name="TryEkpfsBtn" Content="Probar EKPFS" HorizontalAlignment="Stretch" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8" Margin="0,8,0,0">
+              <StackPanel Spacing="6">
+                <TextBlock Text="XTS Data" Classes="label" />
+                <TextBox x:Name="XtsDataTextBox" Classes="mono" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Spacing="6">
+                <TextBlock Text="XTS Tweak" Classes="label" />
+                <TextBox x:Name="XtsTweakTextBox" Classes="mono" />
+              </StackPanel>
+            </Grid>
+            <Button x:Name="TryXtsBtn" Content="Probar claves XTS" HorizontalAlignment="Stretch" />
+          </StackPanel>
+        </Border>
+      </TabItem>
+      <TabItem x:Name="SfoTab" Header="PARAM.SFO" />
+      <TabItem Header="Entries">
+        <DockPanel Margin="4">
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            <Button x:Name="ExtractEntryBtn" Content="Extract" IsEnabled="False" />
+            <Button x:Name="ExtractDecryptBtn" Classes="accent" Content="Extract &amp; Decrypt" IsEnabled="False" />
+          </StackPanel>
+          <DataGrid x:Name="EntriesGrid" Classes="mono" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="220" />
+              <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="100" />
+              <DataGridTextColumn Header="Offset" Binding="{Binding Offset}" Width="100" />
+              <DataGridTextColumn Header="Encrypted" Binding="{Binding Encrypted}" Width="90" />
+              <DataGridTextColumn Header="Key" Binding="{Binding KeyIndex}" Width="60" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </DockPanel>
+      </TabItem>
+    </TabControl>
+  </Grid>
+</UserControl>
